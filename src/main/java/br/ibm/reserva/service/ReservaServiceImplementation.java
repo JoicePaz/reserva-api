@@ -1,6 +1,7 @@
 package br.ibm.reserva.service;
 
-import java.time.Duration;
+import static br.ibm.reserva.utils.DuracaoUtils.retornaDuracao;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,13 +43,6 @@ public class ReservaServiceImplementation  implements ReservaService{
 		reservaRepository.save(reserva);
 
 		return reserva;
-	}
-	
-	private Integer retornaDuracao(LocalDateTime fimEm, LocalDateTime inicioEm) {
-		Duration duration = Duration.between(inicioEm, fimEm);
-		Long minutos = duration.getSeconds() / 60;
-		
-		return Integer.valueOf(minutos.toString()) ;
 	}
 	
 	private boolean verificaDisponibilidade(LocalDateTime inicioEm, LocalDateTime fimEm) {
