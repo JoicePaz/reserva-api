@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.ibm.reserva.exceptions.DisponibilidadeException;
 import br.ibm.reserva.exceptions.DuracaoReservaException;
 import br.ibm.reserva.model.Reserva;
 import br.ibm.reserva.model.Status;
@@ -21,7 +23,11 @@ public class ReservaServiceImplementation  implements ReservaService{
 	private ReservaRepository reservaRepository;
 
 	@Override
-	public Reserva criaReserva(Reserva reserva) throws DuracaoReservaException {
+	public Reserva criaReserva(Reserva reserva) throws DuracaoReservaException, DisponibilidadeException {
+		if(verificaDisponibilidade(reserva.getInicioEm(), reserva.getFimEm())) {
+			throw new DisponibilidadeException("O horário solicitado não está disponível, favor selecione um outro horário");
+		}
+		
 		reserva.setStatus(Status.ATIVA);
 		reserva.setCriadoEm(LocalDateTime.now());
 		reserva.setId(retornaIdFormatado());
@@ -31,6 +37,7 @@ public class ReservaServiceImplementation  implements ReservaService{
 		if(reserva.getInicioEm().getMinute() != 0 || reserva.getFimEm().getMinute() != 0 || reserva.getDuracao() == 0 || reserva.getDuracao() % 60 != 0) {
 			throw new DuracaoReservaException("Reservas só podem ser feitas por hora");
 		}
+		
 		
 		reservaRepository.save(reserva);
 
@@ -44,6 +51,32 @@ public class ReservaServiceImplementation  implements ReservaService{
 		return Integer.valueOf(minutos.toString()) ;
 	}
 	
+	private boolean verificaDisponibilidade(LocalDateTime inicioEm, LocalDateTime fimEm) {
+
+		for(Reserva reserva: reservaRepository.findAll()){
+			if(reserva.getInicioEm().isBefore(inicioEm) && reserva.getFimEm().isAfter(fimEm)) {
+				return true;
+			}
+			
+			if(reserva.getInicioEm().isAfter(inicioEm) && reserva.getInicioEm().isBefore(fimEm)) {
+				return true;
+			}
+			
+			if(reserva.getFimEm().isAfter(inicioEm) && reserva.getFimEm().isBefore(fimEm)) {
+				return true;
+			}
+			
+			if(inicioEm.isBefore(reserva.getInicioEm()) && fimEm.isAfter(reserva.getFimEm())) {
+				return true;
+			}
+			if(reserva.getInicioEm().isEqual(inicioEm) || reserva.getFimEm().isEqual(fimEm)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	private float retornaValor(Integer duracao) {
 		double valor = duracao * 0.5;
 		
@@ -55,8 +88,10 @@ public class ReservaServiceImplementation  implements ReservaService{
 		
 		DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyyMMdd");
 		String dataFormatada = data.format(formatador);
-
-		return dataFormatada + "924R1L10000";		
+		Random rand = new Random();
+		int numero = rand.nextInt(9999);
+		
+		return dataFormatada + "924R1L1" + String.format("%4d", numero);		
 	}
 
 	@Override 
