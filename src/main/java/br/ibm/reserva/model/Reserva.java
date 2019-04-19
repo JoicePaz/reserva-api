@@ -21,4 +21,5 @@ public class Reserva {
 	@Getter @Setter private LocalDateTime criadoEm;	
 	@Getter @Setter private Integer duracao;
 	@Getter @Setter private Float valor;
+	@Getter @Setter private LocalDateTime canceladaEm;
 }

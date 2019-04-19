@@ -21,7 +21,7 @@ public class ReservaServiceImplementation  implements ReservaService{
 
 	@Override
 	public Reserva criaReserva(Reserva reserva) {
-		reserva.setStatus(Status.ATIVO);
+		reserva.setStatus(Status.ATIVA);
 		reserva.setCriadoEm(LocalDateTime.now());
 		reserva.setId(retornaIdFormatado());
 		reserva.setDuracao(retornaDuracao(reserva.getFimEm(), reserva.getInicioEm()));
@@ -61,7 +61,6 @@ public class ReservaServiceImplementation  implements ReservaService{
 		return reserva;
 	}
 
-
 	@Override
 	public List<Reserva> obtemTodasAsReservas() {
 
@@ -79,8 +78,11 @@ public class ReservaServiceImplementation  implements ReservaService{
 	@Override
 	public void deletaReserva(String idReserva) {
 		Reserva reservaASerDeletada = reservaRepository.findById(idReserva).get();
-
-		reservaRepository.delete(reservaASerDeletada);
+		
+		reservaASerDeletada.setCanceladaEm(LocalDateTime.now());
+		reservaASerDeletada.setStatus(Status.CANCELADA);
+		
+		reservaRepository.save(reservaASerDeletada);
 
 	}
 
