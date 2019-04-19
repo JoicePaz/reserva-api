@@ -11,6 +11,9 @@ http://localhost:8080/swagger-ui.html
 ### Pré-requisitos:
 Java
 
+### Visualização da API na nuvem através do Heroku
+[HEROKU](https://reserva-api.herokuapp.com/swagger-ui.html)
+
 #### Banco utilizado em memória [H2](https://www.h2database.com/html/main.html)
 
 
