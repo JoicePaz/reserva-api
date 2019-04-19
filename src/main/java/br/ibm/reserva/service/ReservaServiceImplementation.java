@@ -1,7 +1,9 @@
 package br.ibm.reserva.service;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +22,36 @@ public class ReservaServiceImplementation  implements ReservaService{
 	@Override
 	public Reserva criaReserva(Reserva reserva) {
 		reserva.setStatus(Status.ATIVO);
-		reserva.setCriadoEm(LocalDate.now());
+		reserva.setCriadoEm(LocalDateTime.now());
 		reserva.setId(retornaIdFormatado());
+		reserva.setDuracao(retornaDuracao(reserva.getFimEm(), reserva.getInicioEm()));
+		reserva.setValor(retornaValor(reserva.getDuracao()));
 
 		reservaRepository.save(reserva);
 
 		return reserva;
 	}
-
+	
+	private Integer retornaDuracao(LocalDateTime fimEm, LocalDateTime inicioEm) {
+		Duration duration = Duration.between(inicioEm, fimEm);
+		Long minutos = duration.getSeconds() / 60;
+		
+		return Integer.valueOf(minutos.toString()) ;
+	}
+	
+	private float retornaValor(Integer duracao) {
+		double valor = duracao * 0.5;
+		
+		return (float) valor;
+	}
+	
 	private String retornaIdFormatado() {
 		LocalDate data = LocalDate.now();
-		SimpleDateFormat formatador = new SimpleDateFormat("yyyyMMdd");
+		
+		DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyyMMdd");
+		String dataFormatada = data.format(formatador);
 
-		return formatador.format(data) + "924R1L10000";		
+		return dataFormatada + "924R1L10000";		
 	}
 
 	@Override 
