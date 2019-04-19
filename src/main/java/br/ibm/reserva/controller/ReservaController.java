@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.ibm.reserva.exceptions.DuracaoReservaException;
 import br.ibm.reserva.model.Reserva;
 import br.ibm.reserva.service.ReservaService;
 
@@ -31,7 +32,7 @@ public class ReservaController {
 	@PostMapping
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public Reserva reservaPost(@RequestBody @Valid Reserva reserva) {
+	public Reserva reservaPost(@RequestBody @Valid Reserva reserva) throws DuracaoReservaException {
 		
 		Reserva reservaCriada = reservaService.criaReserva(reserva);
 		
