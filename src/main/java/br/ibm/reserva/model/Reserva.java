@@ -3,6 +3,8 @@ package br.ibm.reserva.model;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +19,7 @@ public class Reserva {
 	@Getter @Setter private LocalDateTime fimEm;
 	@Id
 	@Getter @Setter private String id;
+	@Enumerated(EnumType.STRING)
 	@Getter @Setter private Status status;
 	@Getter @Setter private LocalDateTime criadoEm;	
 	@Getter @Setter private Integer duracao;
