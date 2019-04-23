@@ -13,7 +13,7 @@ public interface ReservaService {
 	
 	List<Reserva> obtemTodasAsReservas();
 	
-	Reserva atualizaReserva(Reserva reserva);
+	Reserva atualizaReserva(Reserva reserva, String idReserva);
 	
 	void deletaReserva(String idReserva);
 	

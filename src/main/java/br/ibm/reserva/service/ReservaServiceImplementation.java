@@ -18,7 +18,7 @@ import br.ibm.reserva.model.Status;
 import br.ibm.reserva.repository.ReservaRepository;
 
 @Service
-public class ReservaServiceImplementation  implements ReservaService{
+public class ReservaServiceImplementation  implements ReservaService {
 
 	@Autowired
 	private ReservaRepository reservaRepository;
@@ -38,7 +38,6 @@ public class ReservaServiceImplementation  implements ReservaService{
 		if(reserva.getInicioEm().getMinute() != 0 || reserva.getFimEm().getMinute() != 0 || reserva.getDuracao() == 0 || reserva.getDuracao() % 60 != 0) {
 			throw new DuracaoReservaException("Reservas só podem ser feitas por hora");
 		}
-		
 		
 		reservaRepository.save(reserva);
 
@@ -101,13 +100,12 @@ public class ReservaServiceImplementation  implements ReservaService{
 		return reservaRepository.findAll();
 	}
 
+
 	@Override
-	public Reserva atualizaReserva(Reserva reserva) {
-
+	public Reserva atualizaReserva(Reserva reserva, String idReserva) {
 		Reserva reservaAtualizada = reservaRepository.save(reserva);
-
 		return reservaAtualizada;
-	}
+	}	
 
 	@Override
 	public void deletaReserva(String idReserva) {

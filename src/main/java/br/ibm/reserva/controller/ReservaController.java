@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.ibm.reserva.exceptions.DisponibilidadeException;
 import br.ibm.reserva.exceptions.DuracaoReservaException;
+import br.ibm.reserva.exceptions.StatusReservaException;
 import br.ibm.reserva.model.Reserva;
 import br.ibm.reserva.service.ReservaService;
 
@@ -66,9 +67,9 @@ public class ReservaController {
 	@PutMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Reserva reservaPut(@PathVariable String idReserva, @RequestBody Reserva reserva) {
+	public Reserva reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws StatusReservaException{
 		
-		Reserva reservaAtualizada =  reservaService.atualizaReserva(reserva);
+		Reserva reservaAtualizada =  reservaService.atualizaReserva(reserva, idReserva);
 		
 		return reservaAtualizada;
 	}
