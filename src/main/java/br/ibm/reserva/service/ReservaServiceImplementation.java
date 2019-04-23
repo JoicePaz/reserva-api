@@ -84,7 +84,7 @@ public class ReservaServiceImplementation  implements ReservaService {
 		Random rand = new Random();
 		int numero = rand.nextInt(9999);
 		
-		return dataFormatada + "924R1L1" + String.format("%4d", numero);		
+		return dataFormatada + "924R1L1" + String.format("%04d", numero);		
 	}
 
 	@Override 
