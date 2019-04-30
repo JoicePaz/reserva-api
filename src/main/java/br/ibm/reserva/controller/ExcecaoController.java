@@ -1,5 +1,7 @@
 package br.ibm.reserva.controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +36,10 @@ public class ExcecaoController{
 	public ResponseEntity<String> statusInvalido(InvalidFormatException ex, WebRequest request) {
 		return new ResponseEntity<String>("O status da reserva só pode ser ATIVA, CANCELADA e PAGA", new HttpHeaders(), HttpStatus.BAD_REQUEST);
 	}	
+	
+	
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<String> reservaInvalida(NoSuchElementException ex, WebRequest request) {
+		return new ResponseEntity<String>("Reserva não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND);
+	}
 }

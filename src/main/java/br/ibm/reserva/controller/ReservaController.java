@@ -48,9 +48,7 @@ public class ReservaController {
 	public Reserva reservaGet(@PathVariable String idReserva) {
 		
 		Reserva reservaBuscada = reservaService.obtemReservaPorId(idReserva);
-		
-		return reservaBuscada;
-		
+		return reservaBuscada;	
 	}
 
 	@GetMapping
@@ -80,6 +78,4 @@ public class ReservaController {
 	public void reservaDelete(@PathVariable String idReserva) {
 		reservaService.deletaReserva(idReserva);
 	}
-	
-	
 }

@@ -89,17 +89,14 @@ public class ReservaServiceImplementation  implements ReservaService {
 
 	@Override 
 	public Reserva obtemReservaPorId(String idReserva) {
-
-		Reserva reserva = reservaRepository.findById(idReserva).get();		
+		Reserva reserva = reservaRepository.findById(idReserva).get();	
 		return reserva;
 	}
 
 	@Override
 	public List<Reserva> obtemTodasAsReservas() {
-
 		return reservaRepository.findAll();
 	}
-
 
 	@Override
 	public Reserva atualizaReserva(Reserva reserva, String idReserva) {
@@ -115,12 +112,5 @@ public class ReservaServiceImplementation  implements ReservaService {
 		reservaASerDeletada.setStatus(Status.CANCELADA);
 		
 		reservaRepository.save(reservaASerDeletada);
-
 	}
-
-
-
 }
-
-
-
