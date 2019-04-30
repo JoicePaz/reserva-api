@@ -15,6 +15,6 @@ public interface ReservaService {
 	
 	Reserva atualizaReserva(Reserva reserva, String idReserva);
 	
-	void deletaReserva(String idReserva);
+	Reserva deletaReserva(String idReserva);
 	
 }

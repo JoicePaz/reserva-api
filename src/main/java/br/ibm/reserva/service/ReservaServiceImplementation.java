@@ -105,12 +105,14 @@ public class ReservaServiceImplementation  implements ReservaService {
 	}	
 
 	@Override
-	public void deletaReserva(String idReserva) {
+	public Reserva deletaReserva(String idReserva) {
 		Reserva reservaASerDeletada = reservaRepository.findById(idReserva).get();
 		
 		reservaASerDeletada.setCanceladaEm(LocalDateTime.now());
 		reservaASerDeletada.setStatus(Status.CANCELADA);
 		
 		reservaRepository.save(reservaASerDeletada);
+		
+		return reservaASerDeletada;	
 	}
 }
