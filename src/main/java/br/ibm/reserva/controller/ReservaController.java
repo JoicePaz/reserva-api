@@ -81,7 +81,7 @@ public class ReservaController {
 	
 	@DeleteMapping("/{idReserva}")
 	@ResponseBody
-	@ResponseStatus (HttpStatus.OK)
+	@ResponseStatus (HttpStatus.NO_CONTENT)
 	public Reserva reservaDelete(@PathVariable String idReserva) {
 		Reserva reservaASerDeletada = reservaService.deletaReserva(idReserva);
 		
