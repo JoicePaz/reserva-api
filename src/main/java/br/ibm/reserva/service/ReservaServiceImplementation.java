@@ -118,7 +118,7 @@ public class ReservaServiceImplementation  implements ReservaService {
 	public Reserva atualizaReserva(Reserva reserva, String idReserva) throws ReservaNaoEncontradaException {
 
 		if(obtemReservaPorId(idReserva) == null) {
-			throw new ReservaNaoEncontradaException("Erro ao atualizar. Reserva não encontrada");
+			throw new ReservaNaoEncontradaException("Reserva não encontrada");
 		}
 
 		reserva.setId(idReserva); // gambs

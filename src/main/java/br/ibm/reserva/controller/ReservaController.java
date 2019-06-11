@@ -2,12 +2,15 @@ package br.ibm.reserva.controller;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import br.ibm.reserva.exceptions.ReservaNaoEncontradaException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.ibm.reserva.exceptions.DisponibilidadeException;
 import br.ibm.reserva.exceptions.DuracaoReservaException;
-import br.ibm.reserva.exceptions.StatusReservaException;
 import br.ibm.reserva.model.Reserva;
+import br.ibm.reserva.resource.ReservaResource;
 import br.ibm.reserva.service.ReservaService;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -77,18 +81,21 @@ public class ReservaController {
 	@GetMapping
 	@ResponseStatus (HttpStatus.OK)
 	@ResponseBody
-	public List<Reserva> all() {
-		
-		List<Reserva> listaReservas;
-		listaReservas = reservaService.obtemTodasAsReservas();
-		
-		return listaReservas;
+	public ResponseEntity<Resources<ReservaResource>> all() {
+
+		final List<ReservaResource> listaReservaResources = reservaService.obtemTodasAsReservas().stream().map(ReservaResource::new).collect(Collectors.toList());
+		final Resources<ReservaResource> resources = new Resources<>(listaReservaResources);
+		final String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+
+		resources.add(new Link(uriString, "self"));
+
+		return ResponseEntity.ok(resources);
 	}
 	
 	@PutMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Resource<Reserva> reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws StatusReservaException, ReservaNaoEncontradaException
+	public Resource<Reserva> reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws ReservaNaoEncontradaException
 	{
 		
 		Reserva reservaAtualizada =  reservaService.atualizaReserva(reserva, idReserva);
