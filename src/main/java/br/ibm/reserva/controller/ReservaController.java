@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,9 @@ import br.ibm.reserva.service.ReservaService;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservaController {
@@ -37,15 +41,20 @@ public class ReservaController {
 	
 	@PostMapping
 	@ResponseBody
-	public ResponseEntity<Reserva> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder b) throws DuracaoReservaException, DisponibilidadeException {
+	public ResponseEntity<Resource<Reserva>> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder b) throws DuracaoReservaException, DisponibilidadeException {
 
 		Reserva reservaCriada = reservaService.criaReserva(reserva);
 
 		UriComponents uriComponents = b.path("/api/reservas/{id}").buildAndExpand(reservaCriada.getId());
 
+		Resource<Reserva> resource = new Resource<Reserva>(reservaCriada);
+		resource.add(linkTo(methodOn(ReservaController.class)
+				.reservaGet(reservaCriada.getId())).withSelfRel());
+
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponents.toUri());
-		return new ResponseEntity<Reserva>(reservaCriada, headers, HttpStatus.CREATED);
+
+		return new ResponseEntity<Resource<Reserva>>(resource, headers, HttpStatus.CREATED);
 	}
 
 	

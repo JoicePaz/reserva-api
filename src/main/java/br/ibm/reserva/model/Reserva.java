@@ -8,6 +8,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.ResourceSupport;
 
 @Entity
 @Table(name = "reserva")
