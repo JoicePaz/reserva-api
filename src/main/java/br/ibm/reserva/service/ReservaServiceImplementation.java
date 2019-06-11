@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import br.ibm.reserva.exceptions.ReservaNaoEncontradaException;
 import br.ibm.reserva.model.QReserva;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +115,13 @@ public class ReservaServiceImplementation  implements ReservaService {
 	}
 
 	@Override
-	public Reserva atualizaReserva(Reserva reserva, String idReserva) {
+	public Reserva atualizaReserva(Reserva reserva, String idReserva) throws ReservaNaoEncontradaException {
+
+		if(obtemReservaPorId(idReserva) == null) {
+			throw new ReservaNaoEncontradaException("Erro ao atualizar. Reserva não encontrada");
+		}
+
+		reserva.setId(idReserva); // gambs
 		Reserva reservaAtualizada = reservaRepository.save(reserva);
 		return reservaAtualizada;
 	}	

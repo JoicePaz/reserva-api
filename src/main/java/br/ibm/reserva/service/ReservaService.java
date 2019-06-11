@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.ibm.reserva.exceptions.DisponibilidadeException;
 import br.ibm.reserva.exceptions.DuracaoReservaException;
+import br.ibm.reserva.exceptions.ReservaNaoEncontradaException;
 import br.ibm.reserva.model.Reserva;
 
 public interface ReservaService {
@@ -13,7 +14,7 @@ public interface ReservaService {
 	
 	List<Reserva> obtemTodasAsReservas();
 	
-	Reserva atualizaReserva(Reserva reserva, String idReserva);
+	Reserva atualizaReserva(Reserva reserva, String idReserva) throws ReservaNaoEncontradaException;
 	
 	Reserva deletaReserva(String idReserva);
 	

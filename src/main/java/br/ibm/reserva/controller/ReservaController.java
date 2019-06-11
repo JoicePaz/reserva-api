@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import br.ibm.reserva.exceptions.ReservaNaoEncontradaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpHeaders;
@@ -87,11 +88,15 @@ public class ReservaController {
 	@PutMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Reserva reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws StatusReservaException{
+	public Resource<Reserva> reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws StatusReservaException, ReservaNaoEncontradaException
+	{
 		
 		Reserva reservaAtualizada =  reservaService.atualizaReserva(reserva, idReserva);
-		
-		return reservaAtualizada;
+
+		Resource<Reserva> resource = new Resource<Reserva>(reservaAtualizada);
+		resource.add(linkTo(methodOn(ReservaController.class).reservaGet(reservaAtualizada.getId())).withSelfRel());
+
+		return resource;
 	}
 	
 	@DeleteMapping("/{idReserva}")
