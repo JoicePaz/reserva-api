@@ -41,11 +41,11 @@ public class ReservaController {
 	
 	@PostMapping
 	@ResponseBody
-	public ResponseEntity<Resource<Reserva>> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder b) throws DuracaoReservaException, DisponibilidadeException {
+	public ResponseEntity<Resource<Reserva>> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder builder) throws DuracaoReservaException, DisponibilidadeException {
 
 		Reserva reservaCriada = reservaService.criaReserva(reserva);
 
-		UriComponents uriComponents = b.path("/api/reservas/{id}").buildAndExpand(reservaCriada.getId());
+		UriComponents uriComponents = builder.path("/api/reservas/{id}").buildAndExpand(reservaCriada.getId());
 
 		Resource<Reserva> resource = new Resource<Reserva>(reservaCriada);
 		resource.add(linkTo(methodOn(ReservaController.class)
@@ -63,10 +63,14 @@ public class ReservaController {
 	@GetMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Reserva reservaGet(@PathVariable String idReserva) {
+	public Resource<Reserva> reservaGet(@PathVariable String idReserva) {
 		
 		Reserva reservaBuscada = reservaService.obtemReservaPorId(idReserva);
-		return reservaBuscada;	
+
+		Resource<Reserva> resource = new Resource<Reserva>(reservaBuscada);
+		resource.add(linkTo(methodOn(ReservaController.class).reservaGet(reservaBuscada.getId())).withSelfRel());
+
+		return resource;
 	}
 
 	@GetMapping
