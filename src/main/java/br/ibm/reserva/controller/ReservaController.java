@@ -50,6 +50,8 @@ public class ReservaController {
 		Resource<Reserva> resource = new Resource<Reserva>(reservaCriada);
 		resource.add(linkTo(methodOn(ReservaController.class)
 				.reservaGet(reservaCriada.getId())).withSelfRel());
+		resource.add(linkTo(methodOn(ReservaController.class)
+				.all()).withRel("all"));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponents.toUri());
