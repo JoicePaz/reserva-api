@@ -5,10 +5,14 @@ import static br.ibm.reserva.utils.DuracaoUtils.retornaDuracao;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import br.ibm.reserva.model.QReserva;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import br.ibm.reserva.exceptions.DisponibilidadeException;
@@ -17,11 +21,16 @@ import br.ibm.reserva.model.Reserva;
 import br.ibm.reserva.model.Status;
 import br.ibm.reserva.repository.ReservaRepository;
 
+import javax.inject.Provider;
+import javax.persistence.EntityManager;
+
 @Service
 public class ReservaServiceImplementation  implements ReservaService {
 
 	@Autowired
 	private ReservaRepository reservaRepository;
+	@Autowired
+	private Provider<EntityManager> entityManager;
 
 	@Override
 	public Reserva criaReserva(Reserva reserva) throws DuracaoReservaException, DisponibilidadeException {
@@ -95,7 +104,13 @@ public class ReservaServiceImplementation  implements ReservaService {
 
 	@Override
 	public List<Reserva> obtemTodasAsReservas() {
-		return reservaRepository.findAll();
+
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		QReserva qReserva = QReserva.reserva;
+
+		List<Reserva> reservas = (List<Reserva>) query.from(qReserva).
+				where(qReserva.status.ne(Status.CANCELADA)).fetch();
+		return reservas;
 	}
 
 	@Override
