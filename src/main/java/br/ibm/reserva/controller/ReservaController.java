@@ -46,25 +46,18 @@ public class ReservaController {
 	
 	@PostMapping
 	@ResponseBody
-	public ResponseEntity<Resource<Reserva>> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder builder) throws DuracaoReservaException, DisponibilidadeException {
+	public ResponseEntity<ReservaResource> reservaPost(@RequestBody @Valid Reserva reserva, UriComponentsBuilder builder) throws DuracaoReservaException, DisponibilidadeException {
 
-		Reserva reservaCriada = reservaService.criaReserva(reserva);
+		ReservaResource reservaResource = new ReservaResource(reservaService.criaReserva(reserva));
 
-		UriComponents uriComponents = builder.path("/api/reservas/{id}").buildAndExpand(reservaCriada.getId());
-
-		Resource<Reserva> resource = new Resource<Reserva>(reservaCriada);
-		resource.add(linkTo(methodOn(ReservaController.class)
-				.reservaGet(reservaCriada.getId())).withSelfRel());
-		resource.add(linkTo(methodOn(ReservaController.class)
-				.all()).withRel("all"));
-
+		UriComponents uriComponents = builder.path("/api/reservas/{id}").buildAndExpand(reservaResource.getReserva().getId());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponents.toUri());
 
-		return new ResponseEntity<Resource<Reserva>>(resource, headers, HttpStatus.CREATED);
+
+		return new ResponseEntity<ReservaResource>(reservaResource, headers, HttpStatus.CREATED);
 	}
 
-	
 	@GetMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
