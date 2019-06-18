@@ -15,6 +15,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,6 +76,11 @@ public class ReservaController {
 	public ResponseEntity<Resources<ReservaResource>> all() {
 
 		final List<ReservaResource> listaReservaResources = reservaService.obtemTodasAsReservas().stream().map(ReservaResource::new).collect(Collectors.toList());
+
+		if(ObjectUtils.isEmpty(listaReservaResources)) {
+			return ResponseEntity.notFound().build();
+		}
+
 		final Resources<ReservaResource> resources = new Resources<>(listaReservaResources);
 		final String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
 
