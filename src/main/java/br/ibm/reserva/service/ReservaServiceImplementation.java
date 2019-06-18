@@ -99,7 +99,7 @@ public class ReservaServiceImplementation  implements ReservaService {
 
 	@Override 
 	public Reserva obtemReservaPorId(String idReserva) {
-		Reserva reserva = reservaRepository.findById(idReserva).get();	
+		Reserva reserva = reservaRepository.findByIdAndStatus(idReserva, Status.ATIVA);
 		return reserva;
 	}
 
@@ -127,9 +127,9 @@ public class ReservaServiceImplementation  implements ReservaService {
 	}	
 
 	@Override
-	public Reserva deletaReserva(String idReserva) {
-		Reserva reservaASerDeletada = reservaRepository.findById(idReserva).get();
-		
+	public Reserva deletaReserva(String idReserva) throws ReservaNaoEncontradaException {
+		Reserva reservaASerDeletada = obtemReservaPorId(idReserva);
+
 		reservaASerDeletada.setCanceladaEm(LocalDateTime.now());
 		reservaASerDeletada.setStatus(Status.CANCELADA);
 		

@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface ReservaRepository extends JpaRepository<Reserva, String> {
 
-	// List<Reserva> findByInicioEm(LocalDateTime inicioEm);
+    Reserva findByIdAndStatus(String id, Status status);
 }

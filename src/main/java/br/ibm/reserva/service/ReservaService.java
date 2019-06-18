@@ -16,6 +16,6 @@ public interface ReservaService {
 	
 	Reserva atualizaReserva(Reserva reserva, String idReserva) throws ReservaNaoEncontradaException;
 	
-	Reserva deletaReserva(String idReserva);
+	Reserva deletaReserva(String idReserva) throws ReservaNaoEncontradaException;
 	
 }

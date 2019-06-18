@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 
 import br.ibm.reserva.exceptions.ReservaNaoEncontradaException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +62,11 @@ public class ReservaController {
 	@GetMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Resource<Reserva> reservaGet(@PathVariable String idReserva) {
+	public ResponseEntity<ReservaResource> reservaGet(@PathVariable String idReserva) {
 		
-		Reserva reservaBuscada = reservaService.obtemReservaPorId(idReserva);
+		ReservaResource reservaBuscada = new ReservaResource(reservaService.obtemReservaPorId(idReserva));
 
-		Resource<Reserva> resource = new Resource<Reserva>(reservaBuscada);
-		resource.add(linkTo(methodOn(ReservaController.class).reservaGet(reservaBuscada.getId())).withSelfRel());
-
-		return resource;
+		return new ResponseEntity<ReservaResource>(reservaBuscada, HttpStatus.OK);
 	}
 
 	@GetMapping
@@ -88,23 +86,30 @@ public class ReservaController {
 	@PutMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.OK)
-	public Resource<Reserva> reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva) throws ReservaNaoEncontradaException
+	public ResponseEntity<ReservaResource> reservaPut(@PathVariable String idReserva, @RequestBody @Valid Reserva reserva, UriComponentsBuilder builder) throws ReservaNaoEncontradaException
 	{
-		
-		Reserva reservaAtualizada =  reservaService.atualizaReserva(reserva, idReserva);
+		ReservaResource reservaResource = new ReservaResource(reservaService.atualizaReserva(reserva, idReserva));
 
-		Resource<Reserva> resource = new Resource<Reserva>(reservaAtualizada);
-		resource.add(linkTo(methodOn(ReservaController.class).reservaGet(reservaAtualizada.getId())).withSelfRel());
+		UriComponents uriComponents = builder.path("/api/reservas/{id}").buildAndExpand(reservaResource.getReserva().getId());
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(uriComponents.toUri());
 
-		return resource;
+		return new ResponseEntity<ReservaResource>(reservaResource, headers, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{idReserva}")
 	@ResponseBody
 	@ResponseStatus (HttpStatus.NO_CONTENT)
-	public Reserva reservaDelete(@PathVariable String idReserva) {
-		Reserva reservaASerDeletada = reservaService.deletaReserva(idReserva);
+	public ResponseEntity<?> reservaDelete(@PathVariable String idReserva) throws ReservaNaoEncontradaException {
+
+		Reserva reservaASerDeletada = reservaService.obtemReservaPorId(idReserva);
+
+		if(reservaASerDeletada == null) {
+			throw new ReservaNaoEncontradaException("");
+		}
+
+		ReservaResource reservaResource = new ReservaResource(reservaService.deletaReserva(idReserva));
 		
-		return reservaASerDeletada;	
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
